@@ -1,29 +1,26 @@
-import java.io.*;
-import java.nio.charset.Charset;
+import edu.stanford.nlp.ling.HasWord;
+import edu.stanford.nlp.process.DocumentPreprocessor;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
-
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.ling.HasWord;
-import edu.stanford.nlp.process.CoreLabelTokenFactory;
-import edu.stanford.nlp.process.DocumentPreprocessor;
-import edu.stanford.nlp.process.PTBTokenizer;
 
 
 public class TextMerger {
 
-    final static String empty = "";
+    private final static String empty = "";
 
     public static void main(String [] args) throws Exception {
         if (args.length != 2) throw new Exception("Path to cache directory and output path must be set");
-        final String cacheDirectory = cleanString(args[0]);
+        final String cacheDirectory = Helpers.StringHelper.cleanString(args[0]);
         if (Files.notExists(Paths.get(cacheDirectory))) throw new Exception(String.format("Directory %s is not exists", cacheDirectory));
         File cachedFolder = new File(cacheDirectory);
-        final String outputDirectory = cleanString(args[1]);
+        final String outputDirectory = Helpers.StringHelper.cleanString(args[1]);
         if (Files.notExists(Paths.get(outputDirectory))) throw new Exception(String.format("Directory %s is not exists", outputDirectory));
 
         FilenameFilter textFilter = new FilenameFilter() {
@@ -76,11 +73,6 @@ public class TextMerger {
             }
         }
         System.out.println(String.format("Sentences without punctuation marks: %s", withoutPunctMarksFile));
-
-    }
-
-    private static String cleanString(String str){
-        return str.contains("\"") ? str.replace("\"", "") : str;
     }
 
     private static String combineWords(List<HasWord> words){
